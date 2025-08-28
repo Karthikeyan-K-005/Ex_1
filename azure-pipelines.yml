@@ -20,16 +20,18 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
-# Publish Surefire test results
-- task: PublishTestResults@2
-  inputs:
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    testRunTitle: 'Surefire Test Results'
-    mergeTestResults: true
-
-# Publish the generated JAR as a pipeline artifact
+# Publish build artifacts (JAR/WAR/etc.)
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish Build Artifact'
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)/target/*.jar'
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/target'
     ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+# Publish Surefire test reports (HTML + XML)
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Surefire Test Report'
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/target/surefire-reports'
+    ArtifactName: 'surefire-report'
     publishLocation: 'Container'
